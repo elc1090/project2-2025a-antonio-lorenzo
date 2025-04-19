@@ -1,0 +1,65 @@
+.muscle-diagram-container {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+  
+  .muscle-view {
+    flex: 1;
+    min-width: 300px;
+  }
+  
+  .muscle-view h4 {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  
+  .body-with-muscles {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  .base-body {
+    width: 100%;
+    height: auto;
+    display: block;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+  }
+  
+  .muscle-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+  }
+  
+  .muscle-overlay.primary {
+    opacity: 0.9;
+  }
+  
+  .muscle-overlay.secondary {
+    opacity: 0.6;
+  }
+  
+  .muscle-overlay:hover {
+    opacity: 1;
+  }
+  
+  @media (max-width: 768px) {
+    .muscle-diagram-container {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .muscle-view {
+      min-width: 100%;
+    }
+  }
