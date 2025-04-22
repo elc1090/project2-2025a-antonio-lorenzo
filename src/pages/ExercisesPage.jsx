@@ -38,12 +38,19 @@ const ExercisePage = () => {
 
   // Fetch exercise videos
   const fetchVideos = async () => {
+    let allVideos = [];
+    let nextUrl = 'https://wger.de/api/v2/video/';
+    
     try {
-      const response = await fetch('https://wger.de/api/v2/video/');
-      const data = await response.json();
-      setVideos(data.results);
+      while (nextUrl) {
+        const response = await fetch(nextUrl);
+        const data = await response.json();
+        allVideos = [...allVideos, ...data.results];
+        nextUrl = data.next;
+      }
+      setVideos(allVideos);
     } catch (error) {
-      console.error("Error fetching videos:", error);
+      console.error('Error fetching videos:', error);
     }
   };
 
@@ -94,7 +101,13 @@ const ExercisePage = () => {
   };
 
   const getExerciseVideos = (exerciseId) => {
-    return videos.filter(video => video.exercise === exerciseId);
+    return videos.filter(video => {
+      // Verifica se video.exercise é um objeto ou apenas o ID
+      const videoExerciseId = typeof video.exercise === 'object' 
+        ? video.exercise.id 
+        : video.exercise;
+      return videoExerciseId === exerciseId;
+    });
   };
 
   const filteredExercises = allExercises.filter(exercise => {
@@ -217,6 +230,7 @@ const ExercisePage = () => {
                   isExpanded={expandedExerciseId === exercise.id}
                   onToggle={() => toggleExercise(exercise.id)}
                   videos={getExerciseVideos(exercise.id)}
+                  getExerciseVideos={getExerciseVideos}
                   muscleImages={muscleImages}
                 />
               ))}

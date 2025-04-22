@@ -2,8 +2,8 @@ import { useState } from 'react';
 import MuscleDiagram from './MuscleDiagram';
 import './ExerciseCard.css';
 
-const ExerciseCard = ({ exercise, isExpanded, onToggle, videos, muscleImages }) => {
-  const primaryTranslation = exercise.translations[0];
+const ExerciseCard = ({ exercise, isExpanded, onToggle, getExerciseVideos, muscleImages }) => {
+  const primaryTranslation = exercise.translations[0] || exercise.translations.find(t => t.language === 'pt-BR') || exercise.translations[0];
   const primaryImage = exercise.images.find(img => img.is_main) || exercise.images[0];
   const [activeTab, setActiveTab] = useState('description');
 
@@ -40,6 +40,12 @@ const ExerciseCard = ({ exercise, isExpanded, onToggle, videos, muscleImages }) 
             >
               Músculos
             </button>
+            <button 
+              className={activeTab === 'videos' ? 'active' : ''}
+              onClick={() => setActiveTab('videos')}
+            >
+              Vídeos
+            </button>
           </div>
 
           {activeTab === 'description' && (
@@ -73,25 +79,43 @@ const ExerciseCard = ({ exercise, isExpanded, onToggle, videos, muscleImages }) 
                   </div>
                 )}
 
-                {videos.length > 0 && (
-                  <div className="videos-container">
-                    <h4>Vídeos</h4>
-                    <div className="videos-grid">
-                      {videos.map(video => (
-                        <div key={video.id} className="video-item">
-                          <video controls>
-                            <source src={video.video} type="video/mp4" />
-                            Seu navegador não suporta vídeos HTML5.
-                          </video>
-                          <p>Duração: {video.duration}s</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+              
               </div>
             </div>
           )}
+
+
+{activeTab === 'videos' && (
+            <div className="tab-content">
+              <div className="videos-container">
+                <h4>Vídeos</h4>
+                <div className="videos-grid">
+                  {getExerciseVideos(exercise.id).length > 0 ? (
+                    getExerciseVideos(exercise.id).map(video => (
+                      <div key={video.id} className="video-item">
+                        <div className="video-wrapper">
+                          <video controls preload="metadata">
+                            <source 
+                              src={video.video} 
+                              type={`video/${video.codec === 'hevc' ? 'mp4' : 'mp4'}`} 
+                            />
+                            Seu navegador não suporta vídeos HTML5.
+                          </video>
+                        </div>
+                        <div className="video-info">
+                          <p>Duração: {video.duration}s</p>
+                          <p>Resolução: {video.width}x{video.height}</p>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p>Nenhum vídeo disponível para este exercício.</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
 
 {activeTab === 'muscles' && (
   <div className="tab-content">
