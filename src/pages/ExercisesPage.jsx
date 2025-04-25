@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ExerciseCard from '../components/ExerciseCard';
+import FavoriteExercises from '../components/FavoriteExercises';
 import './ExercisePage.css';
 
 const ExercisePage = () => {
@@ -16,8 +17,8 @@ const ExercisePage = () => {
   const [expandedExerciseId, setExpandedExerciseId] = useState(null);
   const [videos, setVideos] = useState([]);
   const [muscleImages, setMuscleImages] = useState({});
+  const [showFavorites, setShowFavorites] = useState(false);
 
-  // Fetch all exercises with pagination
   const fetchAllExercises = async () => {
     let allResults = [];
     let nextUrl = 'https://wger.de/api/v2/exerciseinfo/';
@@ -27,6 +28,7 @@ const ExercisePage = () => {
       while (nextUrl) {
         const response = await fetch(nextUrl);
         const data = await response.json();
+        console.log('Dados recebidos:', data); // Adicione esta linha
         allResults = [...allResults, ...data.results];
         nextUrl = data.next;
       }
@@ -36,7 +38,6 @@ const ExercisePage = () => {
     }
   };
 
-  // Fetch exercise videos
   const fetchVideos = async () => {
     let allVideos = [];
     let nextUrl = 'https://wger.de/api/v2/video/';
@@ -54,7 +55,6 @@ const ExercisePage = () => {
     }
   };
 
-  // Fetch muscle images
   const fetchMuscleImages = async () => {
     try {
       const response = await fetch('https://wger.de/api/v2/muscle/');
@@ -102,7 +102,6 @@ const ExercisePage = () => {
 
   const getExerciseVideos = (exerciseId) => {
     return videos.filter(video => {
-      // Verifica se video.exercise é um objeto ou apenas o ID
       const videoExerciseId = typeof video.exercise === 'object' 
         ? video.exercise.id 
         : video.exercise;
@@ -138,7 +137,6 @@ const ExercisePage = () => {
 
   return (
     <div className="exercise-app">
-      {/* Navigation Bar */}
       <nav className="navbar">
         <div className="navbar-brand">
           <Link to="/">IronCore App</Link>
@@ -150,7 +148,6 @@ const ExercisePage = () => {
         </div>
       </nav>
 
-      {/* Main Content */}
       <div className="exercise-page">
         <div className="filters-section">
           <h2>Filter Exercises</h2>
@@ -163,6 +160,13 @@ const ExercisePage = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
+          
+          <button 
+            className={`favorites-toggle ${showFavorites ? 'active' : ''}`}
+            onClick={() => setShowFavorites(!showFavorites)}
+          >
+            {showFavorites ? 'Show All Exercises' : 'Show Favorites'}
+          </button>
           
           <div className="filter-group">
             <h3>Categories</h3>
@@ -215,9 +219,15 @@ const ExercisePage = () => {
         </div>
         
         <div className="exercises-section">
-          <h2>Exercises ({filteredExercises.length})</h2>
+          <h2>{showFavorites ? 'Favorite Exercises' : `Exercises (${filteredExercises.length})`}</h2>
           
-          {filteredExercises.length === 0 ? (
+          {showFavorites ? (
+            <FavoriteExercises 
+              allExercises={filteredExercises}
+              getExerciseVideos={getExerciseVideos}
+              muscleImages={muscleImages}
+            />
+          ) : filteredExercises.length === 0 ? (
             <div className="no-results">
               No exercises found with selected filters.
             </div>
@@ -229,7 +239,6 @@ const ExercisePage = () => {
                   exercise={exercise}
                   isExpanded={expandedExerciseId === exercise.id}
                   onToggle={() => toggleExercise(exercise.id)}
-                  videos={getExerciseVideos(exercise.id)}
                   getExerciseVideos={getExerciseVideos}
                   muscleImages={muscleImages}
                 />

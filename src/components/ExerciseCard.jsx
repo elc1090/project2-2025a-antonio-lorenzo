@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import MuscleDiagram from './MuscleDiagram';
 import './ExerciseCard.css';
 
@@ -6,6 +6,23 @@ const ExerciseCard = ({ exercise, isExpanded, onToggle, getExerciseVideos, muscl
   const primaryTranslation = exercise.translations[0] || exercise.translations.find(t => t.language === 'pt-BR') || exercise.translations[0];
   const primaryImage = exercise.images.find(img => img.is_main) || exercise.images[0];
   const [activeTab, setActiveTab] = useState('description');
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  useEffect(() => {
+    const favorites = JSON.parse(localStorage.getItem('favoriteExercises') || '[]');
+    setIsFavorite(favorites.includes(exercise.id));
+  }, [exercise.id]);
+
+  const toggleFavorite = (e) => {
+    e.stopPropagation();
+    const favorites = JSON.parse(localStorage.getItem('favoriteExercises') || '[]');
+    const newFavorites = isFavorite
+      ? favorites.filter(id => id !== exercise.id)
+      : [...favorites, exercise.id];
+    
+    localStorage.setItem('favoriteExercises', JSON.stringify(newFavorites));
+    setIsFavorite(!isFavorite);
+  };
 
   return (
     <div className={`exercise-card ${isExpanded ? 'expanded' : ''}`}>
@@ -14,9 +31,18 @@ const ExerciseCard = ({ exercise, isExpanded, onToggle, getExerciseVideos, muscl
           <h3>{primaryTranslation.name}</h3>
           <span className="category-badge">{exercise.category.name}</span>
         </div>
-        <span className="toggle-icon">
-          {isExpanded ? '−' : '+'}
-        </span>
+        <div className="header-actions">
+          <button 
+            className={`favorite-btn ${isFavorite ? 'active' : ''}`}
+            onClick={toggleFavorite}
+            aria-label={isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
+          >
+            {isFavorite ? '★' : '☆'}
+          </button>
+          <span className="toggle-icon">
+            {isExpanded ? '−' : '+'}
+          </span>
+        </div>
       </div>
 
       {isExpanded && (
@@ -78,14 +104,11 @@ const ExerciseCard = ({ exercise, isExpanded, onToggle, getExerciseVideos, muscl
                     />
                   </div>
                 )}
-
-              
               </div>
             </div>
           )}
 
-
-{activeTab === 'videos' && (
+          {activeTab === 'videos' && (
             <div className="tab-content">
               <div className="videos-container">
                 <h4>Vídeos</h4>
@@ -116,40 +139,39 @@ const ExerciseCard = ({ exercise, isExpanded, onToggle, getExerciseVideos, muscl
             </div>
           )}
 
-
-{activeTab === 'muscles' && (
-  <div className="tab-content">
-    <MuscleDiagram 
-      primaryMuscles={exercise.muscles || []}
-      secondaryMuscles={exercise.muscles_secondary || []}
-      muscleImages={muscleImages}
-    />
-    
-    <div className="muscle-list">
-      {exercise.muscles?.length > 0 && (
-        <div className="muscle-group">
-          <h4>Músculos Principais</h4>
-          <ul>
-            {exercise.muscles.map(muscle => (
-              <li key={muscle.id}>{muscle.name}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-      
-      {exercise.muscles_secondary?.length > 0 && (
-        <div className="muscle-group">
-          <h4>Músculos Secundários</h4>
-          <ul>
-            {exercise.muscles_secondary.map(muscle => (
-              <li key={muscle.id}>{muscle.name}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
-  </div>
-)}
+          {activeTab === 'muscles' && (
+            <div className="tab-content">
+              <MuscleDiagram 
+                primaryMuscles={exercise.muscles || []}
+                secondaryMuscles={exercise.muscles_secondary || []}
+                muscleImages={muscleImages}
+              />
+              
+              <div className="muscle-list">
+                {exercise.muscles?.length > 0 && (
+                  <div className="muscle-group">
+                    <h4>Músculos Principais</h4>
+                    <ul>
+                      {exercise.muscles.map(muscle => (
+                        <li key={muscle.id}>{muscle.name}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                
+                {exercise.muscles_secondary?.length > 0 && (
+                  <div className="muscle-group">
+                    <h4>Músculos Secundários</h4>
+                    <ul>
+                      {exercise.muscles_secondary.map(muscle => (
+                        <li key={muscle.id}>{muscle.name}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
