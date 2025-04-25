@@ -69,6 +69,8 @@
 .navbar-logo:hover {
   transform: rotate(15deg);
   filter: drop-shadow(0 0 8px rgba(76, 201, 240, 0.7));
+  margin-left: 12px; 
+
 }
 
 /* --- Dropdown Menu --- */
