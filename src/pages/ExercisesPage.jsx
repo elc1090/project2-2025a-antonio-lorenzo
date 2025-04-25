@@ -141,7 +141,7 @@ const ExercisePage = () => {
       {/* Navigation Bar */}
       <nav className="navbar">
         <div className="navbar-brand">
-          <Link to="/">Fitness App</Link>
+          <Link to="/">IronCore App</Link>
         </div>
         <div className="navbar-links">
           <Link to="/" className="nav-link">Home</Link>

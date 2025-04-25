@@ -1,11 +1,20 @@
 :root {
-  --primary-color: #4361ee;
-  --secondary-color: #3f37c9;
-  --accent-color: #4895ef;
-  --danger-color: #f72585;
-  --light-color: #f8f9fa;
-  --dark-color: #212529;
-  --gray-color: #6c757d;
+  /* Cores Principais (Foco: Energia & Força) */
+  --primary-color: #E63946; /* Vermelho vibrante (destaque) */
+  --secondary-color: #1D3557; /* Azul escuro (profissionalismo) */
+  --accent-color: #457B9D; /* Azul médio (contraste) */
+  --danger-color: #F72585; /* Rosa/Magenta (alertas) */
+
+  /* Tons Neutros (Fundo e Texto) */
+  --light-color: #F1FAEE; /* Branco esverdeado claro */
+  --dark-color: #1A1A1A; /* Preto quase puro */
+  --gray-color: #6C757D; /* Cinza padrão */
+
+  /* Extras (Opcional) */
+  --iron-gradient: linear-gradient(135deg, #2B2D42 0%, #1D3557 100%); /* Degradê metálico */
+  --metal-accent: #A8A8A8; /* Cinza metálico para detalhes */
+
+  /* Efeitos */
   --border-radius: 12px;
   --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   --transition: all 0.3s ease;
