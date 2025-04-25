@@ -18,10 +18,12 @@ const WorkoutsPage = () => {
     exercises: []
   });
 
+  const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [sets, setSets] = useState(3);
   const [reps, setReps] = useState(10);
   const [allExercises, setAllExercises] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const days = [
@@ -48,10 +50,18 @@ const WorkoutsPage = () => {
     saveWorkoutsToLocalStorage(workouts);
   }, [workouts]);
 
-  // Busca exercícios da API
+  // Busca exercícios e categorias da API
   useEffect(() => {
-    const fetchExercises = async () => {
+    const fetchData = async () => {
       try {
+        setIsLoading(true);
+        
+        // Busca categorias
+        const categoriesResponse = await fetch('https://wger.de/api/v2/exercisecategory/');
+        const categoriesData = await categoriesResponse.json();
+        setCategories(categoriesData.results);
+
+        // Busca exercícios
         let allResults = [];
         let nextUrl = 'https://wger.de/api/v2/exerciseinfo/';
         
@@ -65,13 +75,18 @@ const WorkoutsPage = () => {
         setAllExercises(allResults);
         setIsLoading(false);
       } catch (error) {
-        console.error("Erro ao buscar exercícios:", error);
+        console.error("Erro ao buscar dados:", error);
         setIsLoading(false);
       }
     };
 
-    fetchExercises();
+    fetchData();
   }, []);
+
+  // Filtra exercícios pela categoria selecionada
+  const filteredExercises = selectedCategory
+    ? allExercises.filter(ex => ex.category.id === Number(selectedCategory))
+    : [];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -106,6 +121,7 @@ const WorkoutsPage = () => {
     }));
     
     setSelectedExercise(null);
+    setSelectedCategory('');
     setSets(3);
     setReps(10);
   };
@@ -125,7 +141,7 @@ const WorkoutsPage = () => {
     
     const newWorkoutWithId = {
       ...newWorkout,
-      id: Date.now() // Adiciona um ID único baseado no timestamp
+      id: Date.now()
     };
     
     setWorkouts(prev => [...prev, newWorkoutWithId]);
@@ -193,26 +209,55 @@ const WorkoutsPage = () => {
           </Typography>
           
           <Box className="exercise-selection">
+            {/* Seletor de Categoria */}
             <FormControl fullWidth margin="normal">
-              <InputLabel>Selecione um Exercício</InputLabel>
+              <InputLabel>Grupo Muscular</InputLabel>
               <Select
-                value={selectedExercise || ''}
-                onChange={(e) => setSelectedExercise(e.target.value)}
-                label="Selecione um Exercício"
+                value={selectedCategory}
+                onChange={(e) => {
+                  setSelectedCategory(e.target.value);
+                  setSelectedExercise(null);
+                }}
+                label="Grupo Muscular"
                 disabled={isLoading}
               >
-                {allExercises.map(exercise => {
-                  const primaryTranslation = exercise.translations[0] || 
-                                           exercise.translations.find(t => t.language === 'pt-BR') || 
-                                           exercise.translations[0];
-                  return (
-                    <MenuItem key={exercise.id} value={exercise.id}>
-                      {primaryTranslation?.name || exercise.name} ({exercise.category.name})
-                    </MenuItem>
-                  );
-                })}
+                <MenuItem value="">
+                  <em>Selecione um grupo muscular</em>
+                </MenuItem>
+                {categories.map(category => (
+                  <MenuItem key={category.id} value={category.id}>
+                    {category.name}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
+
+            {/* Seletor de Exercícios (só aparece depois de selecionar categoria) */}
+            {selectedCategory && (
+              <FormControl fullWidth margin="normal">
+                <InputLabel>Exercício</InputLabel>
+                <Select
+                  value={selectedExercise || ''}
+                  onChange={(e) => setSelectedExercise(e.target.value)}
+                  label="Exercício"
+                  disabled={isLoading}
+                >
+                  <MenuItem value="">
+                    <em>Selecione um exercício</em>
+                  </MenuItem>
+                  {filteredExercises.map(exercise => {
+                    const primaryTranslation = exercise.translations[0] || 
+                                           exercise.translations.find(t => t.language === 'pt-BR') || 
+                                           exercise.translations[0];
+                    return (
+                      <MenuItem key={exercise.id} value={exercise.id}>
+                        {primaryTranslation?.name || exercise.name}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            )}
             
             <Box className="sets-reps-inputs" sx={{ display: 'flex', gap: 2, mt: 2 }}>
               <TextField
@@ -240,7 +285,7 @@ const WorkoutsPage = () => {
                 startIcon={<AddIcon />}
                 disabled={!selectedExercise}
               >
-                Adicionar
+                Add
               </Button>
             </Box>
           </Box>
