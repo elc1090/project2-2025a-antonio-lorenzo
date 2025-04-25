@@ -260,11 +260,13 @@
 .navbar-brand {
   font-size: 1.5rem;
   font-weight: bold;
+  margin-left: 12px; 
 }
 
 .navbar-links {
   display: flex;
   gap: 1.5rem;
+  margin-right: 12px;
 }
 
 .nav-link {

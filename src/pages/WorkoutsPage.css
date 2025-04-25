@@ -1,0 +1,116 @@
+.workouts-container {
+  padding: 2rem;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+.page-title {
+  margin-bottom: 2rem;
+  color: #1D3557;
+  font-weight: bold !important;
+}
+
+.workout-creation-section {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.workout-form {
+  margin-top: 1.5rem;
+}
+
+.exercise-selection {
+  margin-bottom: 1.5rem;
+}
+
+.sets-reps-inputs {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.added-exercises {
+  margin-top: 1.5rem;
+}
+
+.exercise-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.saved-workouts-section {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.workout-list {
+  margin-top: 1.5rem;
+}
+
+/* Navbar styles to match other pages */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #eee;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1D3557;
+  text-decoration: none;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-link {
+  color: #6c757d;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.nav-link:hover {
+  color: #1D3557;
+}
+
+.nav-link.active {
+  color: #E63946;
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .workouts-container {
+    padding: 1rem;
+  }
+  
+  .navbar {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .sets-reps-inputs {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .exercise-selection {
+    flex-direction: column;
+  }
+}

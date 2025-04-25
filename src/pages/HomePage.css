@@ -63,6 +63,7 @@
   object-fit: contain;
   filter: drop-shadow(0 0 5px rgba(67, 97, 238, 0.5));
   transition: var(--transition);
+  margin-left: 12px; 
 }
 
 .navbar-logo:hover {
@@ -75,6 +76,7 @@
   position: relative;
   display: inline-block;
   z-index: 1000;
+  margin-right: 12px;
 }
 
 .dropbtn {
