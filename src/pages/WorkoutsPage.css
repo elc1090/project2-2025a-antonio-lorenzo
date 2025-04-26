@@ -1,27 +1,29 @@
 :root {
-  /* Cores Principais */
-  --primary-color: #3f51b5; /* Azul principal */
-  --secondary-color: #303f9f; /* Azul escuro */
-  --accent-color: #536dfe; /* Azul mais claro para destaque */
-  --danger-color: #f44336; /* Cor de erro (vermelho) */
+  --primary-color: #334fec;
+  --secondary-color: #5386f43b;
+  --accent-color: #536dfe;
+  --success-color: #4caf50;
+  --danger-color: #f44336;
+  --warning-color: #ff9800;
   
-  /* Tons Escuros */
-  --dark-bg: #121212; /* Fundo escuro */
-  --darker-bg: #0a0a0a91; /* Fundo mais escuro */
-  --dark-card: #6072ff6c; /* Cartão escuro */
-  --dark-border: #333; /* Cor de borda escura */
+  --dark-bg: #121212;
+  --darker-bg: #1e1e1e;
+  --dark-card: #2d2d2d;
+  --dark-border: #444;
   
-  /* Textos */
-  --light-text: #f8f9fa; /* Texto claro */
-  --blue-text: #0615f4; /* Texto cinza */
+  --light-text: #271cff;
+  --muted-text: #e7e7e7;
+  --blue-text: #90caf9;
   
-  /* Efeitos */
   --border-radius: 12px;
   --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   --transition: all 0.3s ease;
 }
 
-/* Estilos Gerais */
+body {
+  color: var(--light-text);
+}
+
 .workouts-container {
   padding: 2rem;
   min-height: 100vh;
@@ -30,16 +32,17 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Navbar - Igual ao menu principal */
+/* Navbar */
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
   background-color: var(--darker-bg);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--box-shadow);
   border-bottom: 1px solid var(--dark-border);
   margin-bottom: 2rem;
+  border-radius: var(--border-radius);
 }
 
 .navbar-brand {
@@ -49,9 +52,6 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
 }
 
 .navbar-links {
@@ -100,103 +100,237 @@
   margin-bottom: 2rem;
 }
 
-.section-title {
-  font-size: 1.8rem;
-  margin-bottom: 1.5rem;
-  color: var(--accent-color);
-  border-bottom: 2px solid var(--primary-color);
-  padding-bottom: 0.5rem;
-}
-
 /* Formulários */
 .workout-form {
   margin-top: 1.5rem;
 }
 
-.MuiFormControl-root {
-  margin-bottom: 1.5rem !important;
-}
-
-.MuiInputBase-root {
+.workout-input .MuiOutlinedInput-root,
+.workout-select .MuiOutlinedInput-root,
+.exercise-select .MuiOutlinedInput-root,
+.sets-input .MuiOutlinedInput-root,
+.reps-input .MuiOutlinedInput-root {
   background-color: var(--darker-bg) !important;
   color: var(--light-text) !important;
   border-radius: var(--border-radius) !important;
 }
 
-.MuiOutlinedInput-notchedOutline {
+.workout-input .MuiOutlinedInput-notchedOutline,
+.workout-select .MuiOutlinedInput-notchedOutline,
+.exercise-select .MuiOutlinedInput-notchedOutline,
+.sets-input .MuiOutlinedInput-notchedOutline,
+.reps-input .MuiOutlinedInput-notchedOutline {
   border-color: var(--dark-border) !important;
 }
 
-.MuiInputLabel-root {
+.workout-input .MuiInputLabel-root,
+.workout-select .MuiInputLabel-root,
+.exercise-select .MuiInputLabel-root,
+.sets-input .MuiInputLabel-root,
+.reps-input .MuiInputLabel-root {
   color: var(--blue-text) !important;
 }
 
-.MuiSelect-select {
-  padding: 12px 14px !important;
+.workout-input .MuiInputBase-input,
+.workout-select .MuiSelect-select,
+.exercise-select .MuiSelect-select,
+.sets-input .MuiInputBase-input,
+.reps-input .MuiInputBase-input {
+  color: var(--muted-text) !important;
 }
 
-/* Botões */
-.MuiButton-contained {
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;
-  color: white !important;
-  font-weight: bold !important;
-  text-transform: none !important;
-  padding: 10px 24px !important;
-  border-radius: var(--border-radius) !important;
-  transition: var(--transition) !important;
-  box-shadow: var(--box-shadow) !important;
+/* Estilos para os menus dropdown */
+.MuiMenu-paper {
+  background-color: var(--darker-bg) !important;
+  color: var(--light-text) !important;
 }
 
-.MuiButton-contained:hover {
-  transform: translateY(-2px) !important;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3) !important;
+.MuiMenuItem-root {
+  color: var(--muted-text) !important;
 }
 
-.MuiButton-outlined {
-  border-color: var(--accent-color) !important;
-  color: var(--accent-color) !important;
+.MuiMenuItem-root:hover {
+  background-color: rgba(83, 109, 254, 0.2) !important;
 }
 
-/* Lista de Exercícios */
-.exercise-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-top: 1.5rem;
+.MuiMenuItem-root.Mui-selected {
+  background-color: rgba(83, 109, 254, 0.3) !important;
 }
 
-.exercise-item {
+/* Filtros */
+.category-filters {
   background: var(--darker-bg);
   padding: 1rem;
   border-radius: var(--border-radius);
-  border-left: 4px solid var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.category-chip {
+  transition: var(--transition) !important;
+  cursor: pointer;
+}
+
+.category-chip:hover {
+  transform: translateY(-2px);
+}
+
+.filter-button {
+  color: var(--accent-color) !important;
+  border-color: var(--accent-color) !important;
+}
+
+/* Botões */
+.add-exercise-button {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;
+  height: 56px;
+  color: white !important;
+}
+
+.save-workout-button {
+  background: linear-gradient(135deg, var(--success-color), #2e7d32) !important;
+  color: white !important;
+}
+
+.delete-workout-button {
+  border-color: var(--danger-color) !important;
+  color: var(--danger-color) !important;
+}
+
+.MuiButton-root {
+  color: var(--muted-text) !important;
+}
+
+/* Lista de exercícios adicionados */
+.added-exercises {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.exercises-paper {
+  background: var(--darker-bg) !important;
+  border-radius: var(--border-radius) !important;
+  border: 1px solid var(--dark-border) !important;
+  color: var(--light-text) !important;
+}
+
+.exercises-paper * {
+  background: var(--darker-bg) !important;
+  color: inherit !important;
+}
+
+.exercise-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: rgba(63, 81, 181, 0.1);
+  border-radius: var(--border-radius);
   transition: var(--transition);
+  border-left: 4px solid var(--primary-color);
+  color: var(--muted-text);
 }
 
 .exercise-item:hover {
   transform: translateX(5px);
-  box-shadow: var(--box-shadow);
+  background: rgba(63, 81, 181, 0.2);
 }
 
 .exercise-name {
   font-weight: bold;
   color: var(--accent-color);
-  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
 }
 
 .exercise-details {
-  color: var(--blue-text);
+  color: var(--muted-text);
   font-size: 0.9rem;
 }
 
-/* Ícones */
-.MuiSvgIcon-root {
-  transition: var(--transition) !important;
+.exercise-category {
+  background: rgba(83, 109, 254, 0.2) !important;
+  color: var(--blue-text) !important;
 }
 
-.MuiIconButton-root:hover .MuiSvgIcon-root {
-  color: var(--danger-color) !important;
-  transform: scale(1.1);
+.delete-exercise-button:hover {
+  background-color: rgba(244, 67, 54, 0.1) !important;
+}
+
+/* Treinos salvos */
+.workout-card {
+  background: var(--darker-bg) !important;
+  padding: 1.5rem !important;
+  border-radius: var(--border-radius) !important;
+  margin-bottom: 1.5rem !important;
+  border: 1px solid var(--dark-border) !important;
+  transition: var(--transition) !important;
+  color: var(--light-text) !important;
+}
+
+.workout-card * {
+  color: inherit !important;
+}
+
+.workout-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
+.workout-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.workout-name {
+  display: flex;
+  align-items: center;
+  color: var(--light-text);
+}
+
+.workout-day-chip {
+  background: rgba(76, 175, 80, 0.2) !important;
+  color: var(--success-color) !important;
+}
+
+.exercises-list {
+  padding-left: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.exercise-list-item {
+  margin-bottom: 0.75rem;
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--dark-border);
+}
+
+.exercise-list-name {
+  display: flex;
+  align-items: center;
+  color: var(--muted-text) !important; 
+}
+
+.exercise-list-details {
+  color: var(--muted-text);
+  font-size: 0.9rem;
+}
+
+.exercise-list-category {
+  background: rgba(83, 109, 254, 0.1) !important;
+  color: var(--muted-text) !important;
+}
+
+.no-workouts-message {
+  text-align: center;
+  padding: 2rem;
+  color: var(--muted-text);
+}
+
+/* Animações */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Responsividade */
@@ -219,8 +353,20 @@
     flex-direction: column;
   }
   
-  .MuiButton-root {
-    width: 100%;
+  .workout-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .workout-name {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .workout-day-chip {
+    margin-top: 0.5rem;
+    margin-left: 0 !important;
   }
 }
 
@@ -242,13 +388,48 @@
   background: var(--secondary-color);
 }
 
-/* Efeitos de transição */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+/* Estilos adicionais para garantir legibilidade */
+.MuiTypography-root {
+  color: inherit !important;
 }
 
-.workout-creation-section,
-.saved-workouts-section {
-  animation: fadeIn 0.5s ease-out;
+.MuiPaper-root {
+  background-color: var(--darker-bg) !important;
+  color: var(--muted-text) !important;
+}
+
+.MuiDivider-root {
+  border-color: var(--dark-border) !important;
+}
+
+.MuiInputBase-input {
+  color: var(--light-text) !important;
+}
+
+.MuiInputBase-input::placeholder {
+  color: var(--muted-text) !important;
+  opacity: 1;
+}
+
+.exercise-select .MuiOutlinedInput-root {
+  background-color: var(--darker-bg) !important; 
+  color: var(--light-text) !important;
+  border-radius: var(--border-radius) !important;
+}
+
+.exercise-select .MuiOutlinedInput-notchedOutline {
+  border-color: var(--dark-border) !important; 
+}
+
+.category-chip {
+  background-color: var(--dark-card) !important; 
+  color: var(--light-text) !important; 
+  border: 1px solid var(--dark-border); 
+  transition: var(--transition) !important;
+}
+
+.category-chip:hover {
+  background-color: var(--primary-color) !important; 
+  color: #ffffff !important;
+  transform: translateY(-2px);
 }

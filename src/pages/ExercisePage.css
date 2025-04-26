@@ -1,20 +1,16 @@
 :root {
-  /* Cores Principais (Foco: Energia & Força) */
-  --primary-color: #E63946; /* Vermelho vibrante (destaque) */
-  --secondary-color: #1D3557; /* Azul escuro (profissionalismo) */
-  --accent-color: #457B9D; /* Azul médio (contraste) */
-  --danger-color: #F72585; /* Rosa/Magenta (alertas) */
+  --primary-color: #E63946; 
+  --secondary-color: #1D3557; 
+  --accent-color: #457B9D; 
+  --danger-color: #F72585; 
 
-  /* Tons Neutros (Fundo e Texto) */
-  --light-color: #F1FAEE; /* Branco esverdeado claro */
-  --dark-color: #1A1A1A; /* Preto quase puro */
-  --gray-color: #6C757D; /* Cinza padrão */
+  --light-color: #F1FAEE; 
+  --dark-color: #1A1A1A; 
+  --gray-color: #6C757D; 
 
-  /* Extras (Opcional) */
-  --iron-gradient: linear-gradient(135deg, #2B2D42 0%, #1D3557 100%); /* Degradê metálico */
-  --metal-accent: #A8A8A8; /* Cinza metálico para detalhes */
+  --iron-gradient: linear-gradient(135deg, #2B2D42 0%, #1D3557 100%);
+  --metal-accent: #A8A8A8; 
 
-  /* Efeitos */
   --border-radius: 12px;
   --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   --transition: all 0.3s ease;
@@ -34,9 +30,9 @@
   background: white;
   padding: 1.5rem;
   border-radius: var(--border-radius);
-  height: 100%; /* Ajuste para ocupar toda a altura disponível */
-  max-height: 80vh; /* Define uma altura máxima para a barra de filtros */
-  overflow-y: auto; /* Adiciona scroll vertical */
+  height: 100%; 
+  max-height: 80vh; 
+  overflow-y: auto;
   position: sticky;
   top: 1rem;
   box-shadow: var(--box-shadow);
@@ -247,7 +243,6 @@
   }
 }
 
-/* Adicione no início do arquivo */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -293,8 +288,6 @@
   }
 }
 
-/* Adicione estas regras ao seu CSS existente */
-
 .favorites-toggle {
   background: var(--secondary-color);
   color: white;
@@ -327,4 +320,3 @@
   display: inline-block;
 }
 
-/* Restante do CSS existente... */

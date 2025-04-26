@@ -1,21 +1,17 @@
 :root {
-  /* Cores Atualizadas (Dark Theme) */
   --primary-color: #4361ee;
   --secondary-color: #3f37c9;
   --accent-color: #4cc9f0;
   --danger-color: #f72585;
   
-  /* Tons Escuros */
   --dark-bg: #121212;
   --darker-bg: #0a0a0a;
   --dark-card: #1e1e1e;
   --dark-border: #333;
   
-  /* Textos */
-  --light-text: #f8f9fa;
+  --main-text: #4271ff;
   --gray-text: #adb5bd;
   
-  /* Efeitos */
   --border-radius: 12px;
   --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   --transition: all 0.3s ease;
@@ -28,7 +24,7 @@
   flex-direction: column;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: var(--dark-bg);
-  color: var(--light-text);
+  color: var(--main-text);
 }
 
 /* --- Navbar --- */
@@ -143,7 +139,7 @@
 }
 
 .dropdown-content .nav-link {
-  color: var(--light-text);
+  color: var(--main-text);
   padding: 12px 20px;
   text-decoration: none;
   display: block;
@@ -228,7 +224,7 @@
 
 .cta-button.secondary {
   background-color: transparent;
-  border-color: var(--light-text);
+  border-color: var(--main-text);
 }
 
 .cta-button:hover {
@@ -254,7 +250,7 @@
 .features-section h2 {
   font-size: 2.5rem;
   margin-bottom: 3rem;
-  color: var(--light-text);
+  color: var(--main-text);
 }
 
 .feature-card {
@@ -297,7 +293,7 @@
   text-align: center;
   padding: 2rem;
   background-color: var(--darker-bg);
-  color: var(--light-text);
+  color: var(--main-text);
   border-top: 1px solid var(--dark-border);
 }
 

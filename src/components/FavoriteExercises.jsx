@@ -6,13 +6,11 @@ const FavoriteExercises = ({ allExercises, getExerciseVideos, muscleImages }) =>
   const [favoriteExercises, setFavoriteExercises] = useState([]);
   const [expandedId, setExpandedId] = useState(null);
 
-  // Carrega os favoritos do localStorage
   useEffect(() => {
     const favorites = JSON.parse(localStorage.getItem('favoriteExercises') || '[]');
     setFavoriteIds(favorites);
   }, []);
 
-  // Filtra os exercícios favoritos
   useEffect(() => {
     if (allExercises && allExercises.length > 0) {
       const favs = allExercises.filter(ex => favoriteIds.includes(ex.id));

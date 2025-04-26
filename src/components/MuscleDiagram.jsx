@@ -1,7 +1,6 @@
 import './MuscleDiagram.css';
 
 const MuscleDiagram = ({ primaryMuscles = [], secondaryMuscles = [], muscleImages }) => {
-  // Silhueta corporal base (front e back)
   const baseBodyImages = {
     front: 'https://wger.de/static/images/muscles/muscular_system_front.svg',
     back: 'https://wger.de/static/images/muscles/muscular_system_back.svg'

@@ -28,7 +28,7 @@ const ExercisePage = () => {
       while (nextUrl) {
         const response = await fetch(nextUrl);
         const data = await response.json();
-        console.log('Dados recebidos:', data); // Adicione esta linha
+        console.log('Dados recebidos:', data); 
         allResults = [...allResults, ...data.results];
         nextUrl = data.next;
       }
