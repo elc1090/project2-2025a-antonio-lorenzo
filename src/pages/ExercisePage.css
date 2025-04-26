@@ -9,11 +9,18 @@
   --gray-color: #6C757D; 
 
   --iron-gradient: linear-gradient(135deg, #2B2D42 0%, #1D3557 100%);
-  --metal-accent: #A8A8A8; 
+  --metal-accent: #a8a8a865; 
 
   --border-radius: 12px;
   --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   --transition: all 0.3s ease;
+}
+
+.exercise-page,
+.filters-section,
+.exercises-section {
+  background-color: white;
+  color: var(--dark-color);
 }
 
 .exercise-page {
