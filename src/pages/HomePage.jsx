@@ -18,10 +18,10 @@ const HomePage = () => {
             <button className="dropbtn">Menu</button>
             <div className="dropdown-content">
               <Link to="/exercises" className="nav-link">
-                Exercises
+                Exercícios
               </Link>
               <Link to="/workouts" className="nav-link">
-                Workouts
+                Treinos
               </Link>
             </div>
           </div>
@@ -30,14 +30,14 @@ const HomePage = () => {
 
       <main className="hero-section">
         <div className="hero-content">
-          <h1>Your Fitness Journey Starts Here</h1>
-          <p>Discover hundreds of exercises, create custom workouts, and track your progress</p>
+          <h1>Sua Jornada Fitness começa aqui</h1>
+          <p>Descubra centenas de exercícios, crie treinos personalizados, e acompanhe seu progresso</p>
           <div className="cta-buttons">
             <Link to="/exercises" className="cta-button primary">
-              Browse Exercises
+              Buscar Exercícios
             </Link>
             <Link to="/workouts" className="cta-button secondary">
-              My Workouts
+              Meus Treinos
             </Link>
           </div>
         </div>
@@ -46,18 +46,18 @@ const HomePage = () => {
       <section className="features-section">
         <div className="feature-card">
           <div className="feature-icon">💪</div>
-          <h3>Exercise Library</h3>
-          <p>Access hundreds of exercises with detailed instructions and videos</p>
+          <h3>Biblioteca de Exercícios</h3>
+          <p>Acesse centenas de exercícios com instruções detalhadas e vídeos</p>
         </div>
         <div className="feature-card">
           <div className="feature-icon">📊</div>
-          <h3>Workout Plans</h3>
-          <p>Create and customize your own workout routines</p>
+          <h3>Planos de Treino</h3>
+          <p>Crie e personalize suas próprias rotinas de treino</p>
         </div>
         <div className="feature-card">
           <div className="feature-icon">🏆</div>
-          <h3>Progress Tracking</h3>
-          <p>Monitor your improvements and stay motivated</p>
+          <h3>Progresso</h3>
+          <p>Monitore suas melhorias e mantenha-se motivado</p>
         </div>
       </section>
 

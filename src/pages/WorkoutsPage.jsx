@@ -1,13 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Container, Typography, Button, TextField, Select, MenuItem, FormControl, InputLabel, Box, Paper, IconButton, Divider, Chip } from '@mui/material';
+import { 
+  Container, Typography, Button, TextField, Select, MenuItem, 
+  FormControl, InputLabel, Box, Paper, IconButton, Divider, 
+  Chip, CircularProgress 
+} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import './WorkoutsPage.css';
-import { CircularProgress } from '@mui/material';
+
+const API_BASE_URL = 'https://wger.de/api/v2';
+const PAGE_SIZE = 20;
 
 const WorkoutsPage = () => {
+  // Estados principais
   const [workouts, setWorkouts] = useState(() => {
     const savedWorkouts = localStorage.getItem('workouts');
     return savedWorkouts ? JSON.parse(savedWorkouts) : [];
@@ -19,6 +26,10 @@ const WorkoutsPage = () => {
     exercises: []
   });
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [sets, setSets] = useState(3);
   const [reps, setReps] = useState(10);
@@ -27,63 +38,88 @@ const WorkoutsPage = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [isLoading, setIsLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
+  const [offset, setOffset] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [selectLoading, setSelectLoading] = useState(false);
 
-  const days = [
-    'Segunda-feira',
-    'Terça-feira',
-    'Quarta-feira',
-    'Quinta-feira',
-    'Sexta-feira',
-    'Sábado',
-    'Domingo'
-  ];
+  const selectRef = useRef(null);
+  const days = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado', 'Domingo'];
 
-  const saveWorkoutsToLocalStorage = (workoutsData) => {
+  // Carrega exercícios com paginação
+  const fetchExercises = useCallback(async (currentOffset = 0) => {
+    setSelectLoading(true);
     try {
-      localStorage.setItem('workouts', JSON.stringify(workoutsData));
+      const response = await fetch(
+        `${API_BASE_URL}/exerciseinfo/?limit=${PAGE_SIZE}&offset=${currentOffset}`
+      );
+      const data = await response.json();
+      
+      setAllExercises(prev => {
+        const newExercises = data.results.filter(newEx => 
+          !prev.some(ex => ex.id === newEx.id)
+        );
+        return [...prev, ...newExercises];
+      });
+
+      setHasMore(data.results.length === PAGE_SIZE);
     } catch (error) {
-      console.error('Erro ao salvar workouts no localStorage:', error);
+      console.error("Error fetching exercises:", error);
+    } finally {
+      setSelectLoading(false);
+      setIsLoading(false);
+    }
+  }, []);
+
+  // Carrega categorias
+  const fetchCategories = useCallback(async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/exercisecategory/`);
+      const data = await response.json();
+      setCategories(data.results);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  }, []);
+
+  // Scroll infinito dentro do Select
+  const handleSelectScroll = (event) => {
+    const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
+    const isNearBottom = scrollHeight - scrollTop <= clientHeight + 50;
+    
+    if (isNearBottom && !selectLoading && hasMore) {
+      setOffset(prev => prev + PAGE_SIZE);
     }
   };
 
+  // Carrega mais exercícios quando offset muda
   useEffect(() => {
-    saveWorkoutsToLocalStorage(workouts);
-  }, [workouts]);
+    if (offset > 0) {
+      fetchExercises(offset);
+    }
+  }, [offset, fetchExercises]);
 
+  // Carrega dados iniciais
   useEffect(() => {
-    const fetchExercisesAndCategories = async () => {
-      try {
-        // Buscar categorias primeiro
-        const categoriesResponse = await fetch('https://wger.de/api/v2/exercisecategory/');
-        const categoriesData = await categoriesResponse.json();
-        setCategories(categoriesData.results);
-
-        // Buscar exercícios
-        let allResults = [];
-        let nextUrl = 'https://wger.de/api/v2/exerciseinfo/';
-        
-        while (nextUrl) {
-          const response = await fetch(nextUrl);
-          const data = await response.json();
-          allResults = [...allResults, ...data.results];
-          nextUrl = data.next;
-        }
-        
-        setAllExercises(allResults);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Erro ao buscar dados:", error);
-        setIsLoading(false);
-      }
+    const fetchInitialData = async () => {
+      setIsLoading(true);
+      await fetchCategories();
+      await fetchExercises(0);
     };
 
-    fetchExercisesAndCategories();
-  }, []);
+    fetchInitialData();
+  }, [fetchCategories, fetchExercises]);
 
+  // Salva workouts no localStorage
+  useEffect(() => {
+    localStorage.setItem('workouts', JSON.stringify(workouts));
+  }, [workouts]);
+
+  // Filtra exercícios por categoria
   const filteredExercises = selectedCategory === 'all' 
     ? allExercises 
     : allExercises.filter(ex => ex.category.id === Number(selectedCategory));
 
+  // Manipuladores de eventos
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewWorkout(prev => ({
@@ -111,7 +147,8 @@ const WorkoutsPage = () => {
           name: primaryTranslation?.name || exercise.name,
           sets: Number(sets),
           reps: Number(reps),
-          category: exercise.category.name
+          category: exercise.category.name,
+          categoryId: exercise.category.id
         }
       ]
     }));
@@ -241,37 +278,48 @@ const WorkoutsPage = () => {
           )}
           
           <Box className="exercise-selection">
-        <FormControl fullWidth margin="normal" className="exercise-select">
-          <InputLabel>Selecione um Exercício</InputLabel>
-          {isLoading ? (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '56px' }}>
-              <CircularProgress size={24} />
-            </Box>
-          ) : (
-            <Select
-              value={selectedExercise || ''}
-              onChange={(e) => setSelectedExercise(e.target.value)}
-              label="Selecione um Exercício"
-              disabled={isLoading}
-            >
-              {filteredExercises.length === 0 ? (
-                <MenuItem disabled>Nenhum exercício disponível</MenuItem>
-              ) : (
-                filteredExercises.map(exercise => {
+            <FormControl fullWidth margin="normal" className="exercise-select">
+              <InputLabel>Selecione um Exercício</InputLabel>
+              <Select
+                ref={selectRef}
+                value={selectedExercise || ''}
+                onChange={(e) => setSelectedExercise(e.target.value)}
+                label="Selecione um Exercício"
+                MenuProps={{
+                  PaperProps: {
+                    onScroll: handleSelectScroll,
+                    style: {
+                      maxHeight: 300,
+                    },
+                  },
+                }}
+              >
+                {filteredExercises.map(exercise => {
                   const primaryTranslation = exercise.translations?.find(t => t.language === 'pt-BR') || 
-                                             exercise.translations?.[0] || 
-                                             { name: exercise.name };
+                                           exercise.translations?.[0] || 
+                                           { name: exercise.name };
                   return (
                     <MenuItem key={exercise.id} value={exercise.id}>
                       {primaryTranslation.name} ({exercise.category.name})
                     </MenuItem>
                   );
-                })
-              )}
-            </Select>
-          )}
-        </FormControl>
-        
+                })}
+                {selectLoading && (
+                  <MenuItem disabled>
+                    <Box display="flex" justifyContent="center" width="100%">
+                      <CircularProgress size={24} />
+                    </Box>
+                  </MenuItem>
+                )}
+                {!hasMore && allExercises.length > 0 && (
+                  <MenuItem disabled>
+                    <Box display="flex" justifyContent="center" width="100%">
+                      Todos os exercícios carregados
+                    </Box>
+                  </MenuItem>
+                )}
+              </Select>
+            </FormControl>
             
             <Box className="sets-reps-inputs" sx={{ display: 'flex', gap: 2, mt: 2 }}>
               <TextField
@@ -317,7 +365,19 @@ const WorkoutsPage = () => {
                   <Box key={index} className="exercise-item">
                     <Box sx={{ flexGrow: 1 }}>
                       <Typography fontWeight="bold" className="exercise-name">
+                      <Link 
+                        to={{
+                          pathname: "/exercises",
+                          search: `?exerciseId=${exercise.id}`,
+                          state: { 
+                            searchTerm: exercise.name,
+                            fromWorkout: true 
+                          }
+                        }}
+                        style={{ textDecoration: 'none', color: 'inherit' }}
+                      >
                         {exercise.name}
+                      </Link>
                         <Chip 
                           label={exercise.category} 
                           size="small" 
@@ -397,7 +457,19 @@ const WorkoutsPage = () => {
                     {workout.exercises.map((exercise, exIndex) => (
                       <Box key={exIndex} component="li" className="exercise-list-item">
                         <Typography className="exercise-list-name">
+                        <Link 
+                          to={{
+                            pathname: "/exercises",
+                            search: `?exerciseId=${exercise.id}`,
+                            state: { 
+                              searchTerm: exercise.name,
+                              fromWorkout: true 
+                            }
+                          }}
+                          style={{ textDecoration: 'none', color: 'inherit' }}
+                        >
                           {exercise.name}
+                        </Link>
                           <Chip 
                             label={exercise.category} 
                             size="small" 

@@ -1,8 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, forwardRef } from 'react';
 import MuscleDiagram from './MuscleDiagram';
 import './ExerciseCard.css';
 
-const ExerciseCard = ({ exercise, isExpanded, onToggle, getExerciseVideos, muscleImages }) => {
+const ExerciseCard = forwardRef(({ 
+  exercise, 
+  isExpanded, 
+  onToggle, 
+  getExerciseVideos, 
+  muscleImages,
+  id // Nova prop para identificação do card
+}, ref) => {
   const primaryTranslation = exercise.translations[0] || exercise.translations.find(t => t.language === 'pt-BR') || exercise.translations[0];
   const primaryImage = exercise.images.find(img => img.is_main) || exercise.images[0];
   const [activeTab, setActiveTab] = useState('description');
@@ -25,7 +32,11 @@ const ExerciseCard = ({ exercise, isExpanded, onToggle, getExerciseVideos, muscl
   };
 
   return (
-    <div className={`exercise-card ${isExpanded ? 'expanded' : ''}`}>
+    <div 
+      className={`exercise-card ${isExpanded ? 'expanded' : ''}`}
+      id={id} // Adiciona o ID para scroll
+      ref={ref} // Adiciona a ref para possível manipulação
+    >
       <div className="exercise-header" onClick={onToggle}>
         <div>
           <h3>{primaryTranslation.name}</h3>
@@ -176,6 +187,6 @@ const ExerciseCard = ({ exercise, isExpanded, onToggle, getExerciseVideos, muscl
       )}
     </div>
   );
-};
+});
 
 export default ExerciseCard;

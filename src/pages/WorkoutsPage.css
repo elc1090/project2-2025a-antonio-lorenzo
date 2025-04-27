@@ -24,19 +24,6 @@ body {
   color: var(--light-text);
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html, body {
-  height: 100%;
-  width: 100%;
-  background: var(--dark-bg);
-}
-
-
 .workouts-container {
   padding: 2rem;
   min-height: 100vh;
@@ -445,4 +432,94 @@ html, body {
   background-color: var(--primary-color) !important; 
   color: #ffffff !important;
   transform: translateY(-2px);
+}
+
+/* Skeleton Loader para exercícios */
+.exercise-skeleton-loading {
+  background: #f5f5f5;
+  border-radius: 4px;
+  padding: 16px;
+  margin-bottom: 8px;
+  height: 72px;
+  overflow: hidden;
+  position: relative;
+}
+
+.exercise-skeleton-loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Otimizações de renderização */
+.workout-list {
+  will-change: transform;
+}
+
+.workout-card {
+  transition: transform 0.2s;
+}
+
+.workout-card:hover {
+  transform: translateY(-2px);
+}
+
+/* Melhorias no select de exercícios */
+.exercise-select .MuiSelect-select {
+  min-height: 1.4375em;
+  padding: 16.5px 14px;
+}
+
+/* Indicador de carregamento infinito */
+.infinite-loading-indicator {
+  text-align: center;
+  padding: 16px;
+  color: #666;
+  font-size: 14px;
+}
+
+.exercise-select .MuiSelect-select {
+  min-height: 1.4375em;
+  padding: 16.5px 14px;
+}
+
+.exercise-select .MuiPaper-root {
+  max-height: 300px !important;
+}
+
+.exercise-select .MuiMenuItem-root {
+  min-height: 48px;
+  white-space: normal;
+}
+
+.exercise-select .loading-menu-item {
+  justify-content: center;
+  min-height: 48px;
+}
+
+/* Melhorias na exibição dos itens */
+.exercise-select .MuiMenuItem-root {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 8px 16px;
+}
+
+.exercise-select .MuiMenuItem-root > span:first-child {
+  font-weight: 500;
+}
+
+.exercise-select .MuiMenuItem-root > span:last-child {
+  font-size: 0.75rem;
+  color: #666;
 }
