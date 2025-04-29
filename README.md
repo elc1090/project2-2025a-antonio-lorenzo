@@ -1,21 +1,19 @@
-!["Screenshot do projeto. C:\Users\anton\OneDrive\Área de Trabalho\trab 2 web\project2-2025a-antonio-lorenzo\image\Captura de tela 2025-04-28 224219"]()
+!["Screenshot do projeto. C:\Users\anton\OneDrive\Área de Trabalho\trab 2 web\project2-2025a-antonio-lorenzo\image\Captura de tela 2025-04-28 224219"](https://raw.githubusercontent.com/elc1090/project2-2025a-antonio-lorenzo/refs/heads/main/image/Captura%20de%20tela%202025-04-28%20224219.png)
  
  
  #### Deploy
  
- Preencha aqui a URL para acesso ao site publicado
- 
+ [URL do site publicado](https://ironcoreapi.netlify.app)
  
  #### Desenvolvedores
- #### Desenvolvedor(a)
  
  Antônio Amadeu Dall'Agnol Rohr
  Lorenzo Sacchet Taschetto
  
  #### Ambiente de desenvolvimento
  
- VS Code
- GitHub
+ - VS Code
+ - GitHub
  
  #### Bastidores
  
@@ -29,9 +27,9 @@
  O IronCore é um aplicativo web desenvolvido em React com Material-UI para ajudar usuários a criar, editar e gerenciar seus treinos de musculação. Ele se conecta à API pública do WGER para buscar exercícios e categorias, permitindo que os usuários montem treinos personalizados com séries, repetições e divisão por dias da semana.
  
  #### Tecnologias
- React
- JavaScript
- CSS
+ - React
+ - JavaScript
+ - CSS
  
  ---
 
