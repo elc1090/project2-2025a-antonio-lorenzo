@@ -9,6 +9,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import './WorkoutsPage.css';
+import EditIcon from '@mui/icons-material/Edit';
 
 const API_BASE_URL = 'https://wger.de/api/v2';
 const PAGE_SIZE = 20;
@@ -41,7 +42,8 @@ const WorkoutsPage = () => {
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [selectLoading, setSelectLoading] = useState(false);
-
+  const [editingWorkoutIndex, setEditingWorkoutIndex] = useState(null);
+  
   const selectRef = useRef(null);
   const days = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado', 'Domingo'];
 
@@ -128,6 +130,11 @@ const WorkoutsPage = () => {
     }));
   };
 
+  const editWorkout = (index) => {
+    setEditingWorkoutIndex(index);
+    setNewWorkout(workouts[index]);
+  };
+
   const addExerciseToWorkout = () => {
     if (!selectedExercise) return;
     
@@ -170,13 +177,22 @@ const WorkoutsPage = () => {
       alert('Preencha todos os campos e adicione pelo menos um exercício');
       return;
     }
-    
-    const newWorkoutWithId = {
-      ...newWorkout,
-      id: Date.now()
-    };
-    
-    setWorkouts(prev => [...prev, newWorkoutWithId]);
+  
+    if (editingWorkoutIndex !== null) {
+      // Atualizar treino existente
+      setWorkouts(prev => prev.map((w, i) => 
+        i === editingWorkoutIndex ? { ...newWorkout, id: w.id } : w
+      ));
+      setEditingWorkoutIndex(null);
+    } else {
+      // Criar novo treino
+      const newWorkoutWithId = {
+        ...newWorkout,
+        id: Date.now()
+      };
+      setWorkouts(prev => [...prev, newWorkoutWithId]);
+    }
+  
     setNewWorkout({
       name: '',
       day: '',
@@ -186,6 +202,16 @@ const WorkoutsPage = () => {
 
   const deleteWorkout = (index) => {
     setWorkouts(prev => prev.filter((_, i) => i !== index));
+    if (editingWorkoutIndex === index) {
+      setEditingWorkoutIndex(null);
+      setNewWorkout({
+        name: '',
+        day: '',
+        exercises: []
+      });
+    } else if (editingWorkoutIndex !== null && editingWorkoutIndex > index) {
+      setEditingWorkoutIndex(editingWorkoutIndex - 1);
+    }
   };
 
   return (
@@ -207,7 +233,7 @@ const WorkoutsPage = () => {
 
       <Box className="workout-creation-section">
         <Typography variant="h5" component="h2" gutterBottom>
-          Criar Novo Treino
+          {editingWorkoutIndex !== null ? 'Editar Treino' : 'Criar Novo Treino'}
         </Typography>
         
         <Box className="workout-form">
@@ -365,19 +391,19 @@ const WorkoutsPage = () => {
                   <Box key={index} className="exercise-item">
                     <Box sx={{ flexGrow: 1 }}>
                       <Typography fontWeight="bold" className="exercise-name">
-                      <Link 
-                        to={{
-                          pathname: "/exercises",
-                          search: `?exerciseId=${exercise.id}`,
-                          state: { 
-                            searchTerm: exercise.name,
-                            fromWorkout: true 
-                          }
-                        }}
-                        style={{ textDecoration: 'none', color: 'inherit' }}
-                      >
-                        {exercise.name}
-                      </Link>
+                        <Link 
+                          to={{
+                            pathname: "/exercises",
+                            search: `?exerciseId=${exercise.id}`,
+                            state: { 
+                              searchTerm: exercise.name,
+                              fromWorkout: true 
+                            }
+                          }}
+                          style={{ textDecoration: 'none', color: 'inherit' }}
+                        >
+                          {exercise.name}
+                        </Link>
                         <Chip 
                           label={exercise.category} 
                           size="small" 
@@ -401,91 +427,130 @@ const WorkoutsPage = () => {
                 ))}
               </Paper>
               
-              <Button
-                variant="contained"
-                color="success"
-                onClick={saveWorkout}
-                fullWidth
-                sx={{ mt: 2 }}
-                disabled={!newWorkout.name || !newWorkout.day || newWorkout.exercises.length === 0}
-                className="save-workout-button"
-              >
-                Salvar Treino
-              </Button>
+              <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+                <Button
+                  variant="contained"
+                  color="success"
+                  onClick={saveWorkout}
+                  fullWidth
+                  disabled={!newWorkout.name || !newWorkout.day || newWorkout.exercises.length === 0}
+                  className="save-workout-button"
+                >
+                  {editingWorkoutIndex !== null ? 'Atualizar Treino' : 'Salvar Treino'}
+                </Button>
+                
+                {editingWorkoutIndex !== null && (
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={() => {
+                      setEditingWorkoutIndex(null);
+                      setNewWorkout({
+                        name: '',
+                        day: '',
+                        exercises: []
+                      });
+                    }}
+                    fullWidth
+                    className="cancel-edit-button"
+                  >
+                    Cancelar
+                  </Button>
+                )}
+              </Box>
             </Box>
           )}
         </Box>
       </Box>
-      
+
       <Box className="saved-workouts-section">
         <Typography variant="h5" component="h2" gutterBottom>
           Treinos Salvos
         </Typography>
         
-        {workouts.length === 0 ? (
+        {workouts.length === 0 || (workouts.length === 1 && editingWorkoutIndex !== null) ? (
           <Typography variant="body1" color="text.secondary" className="no-workouts-message">
             Nenhum treino salvo ainda. Crie seu primeiro treino acima.
           </Typography>
         ) : (
           <Box className="workout-list">
-            {workouts.map((workout, index) => (
-              <Paper key={workout.id || index} elevation={3} className="workout-card">
-                <Box className="workout-card-header">
-                  <Typography variant="h6" component="h3" className="workout-name">
-                    {workout.name} 
-                    <Chip label={workout.day} size="small" sx={{ ml: 1 }} className="workout-day-chip" />
-                  </Typography>
-                  
-                  <Button
-                    variant="outlined"
-                    color="error"
-                    startIcon={<DeleteIcon />}
-                    onClick={() => deleteWorkout(index)}
-                    size="small"
-                    className="delete-workout-button"
-                  >
-                    Excluir
-                  </Button>
-                </Box>
+            {workouts
+              .filter((_, i) => i !== editingWorkoutIndex) // Filtra o treino sendo editado
+              .map((workout, filteredIndex) => {
+                // Encontra o índice original no array não filtrado
+                const originalIndex = workouts.findIndex(w => w.id === workout.id);
                 
-                <Box sx={{ mt: 2 }} className="workout-exercises">
-                  <Typography variant="subtitle2" gutterBottom className="exercises-title">
-                    Exercícios:
-                  </Typography>
-                  
-                  <Box component="ul" className="exercises-list">
-                    {workout.exercises.map((exercise, exIndex) => (
-                      <Box key={exIndex} component="li" className="exercise-list-item">
-                        <Typography className="exercise-list-name">
-                        <Link 
-                          to={{
-                            pathname: "/exercises",
-                            search: `?exerciseId=${exercise.id}`,
-                            state: { 
-                              searchTerm: exercise.name,
-                              fromWorkout: true 
-                            }
-                          }}
-                          style={{ textDecoration: 'none', color: 'inherit' }}
-                        >
-                          {exercise.name}
-                        </Link>
-                          <Chip 
-                            label={exercise.category} 
-                            size="small" 
-                            sx={{ ml: 1 }} 
-                            className="exercise-list-category"
-                          />
-                        </Typography>
-                        <Typography className="exercise-list-details">
-                          {exercise.sets} séries × {exercise.reps} repetições
-                        </Typography>
+                return (
+                  <Paper key={workout.id || originalIndex} elevation={3} className="workout-card">
+                    <Box className="workout-card-header">
+                      <Typography variant="h6" component="h3" className="workout-name">
+                        {workout.name} 
+                        <Chip label={workout.day} size="small" sx={{ ml: 1 }} className="workout-day-chip" />
+                      </Typography>
+
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        startIcon={<EditIcon />}
+                        onClick={() => editWorkout(originalIndex)}
+                        size="small"
+                        sx={{ ml: 1 }}
+                        className="edit-workout-button"
+                      >
+                        Editar
+                      </Button>
+                      
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        startIcon={<DeleteIcon />}
+                        onClick={() => deleteWorkout(originalIndex)}
+                        size="small"
+                        className="delete-workout-button"
+                      >
+                        Excluir
+                      </Button>
+                    </Box>
+                    
+                    <Box sx={{ mt: 2 }} className="workout-exercises">
+                      <Typography variant="subtitle2" gutterBottom className="exercises-title">
+                        Exercícios:
+                      </Typography>
+                      
+                      <Box component="ul" className="exercises-list">
+                        {workout.exercises.map((exercise, exIndex) => (
+                          <Box key={exIndex} component="li" className="exercise-list-item">
+                            <Typography className="exercise-list-name">
+                              <Link 
+                                to={{
+                                  pathname: "/exercises",
+                                  search: `?exerciseId=${exercise.id}`,
+                                  state: { 
+                                    searchTerm: exercise.name,
+                                    fromWorkout: true 
+                                  }
+                                }}
+                                style={{ textDecoration: 'none', color: 'inherit' }}
+                              >
+                                {exercise.name}
+                              </Link>
+                              <Chip 
+                                label={exercise.category} 
+                                size="small" 
+                                sx={{ ml: 1 }} 
+                                className="exercise-list-category"
+                              />
+                            </Typography>
+                            <Typography className="exercise-list-details">
+                              {exercise.sets} séries × {exercise.reps} repetições
+                            </Typography>
+                          </Box>
+                        ))}
                       </Box>
-                    ))}
-                  </Box>
-                </Box>
-              </Paper>
-            ))}
+                    </Box>
+                  </Paper>
+                );
+              })}
           </Box>
         )}
       </Box>
